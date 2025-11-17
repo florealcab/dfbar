@@ -21,6 +21,7 @@ Simple df command enhancer in less than 4K (only uses bash/df/awk)
 
 You can use a plugin manager, like the famous [thefly](https://github.com/joknarf/thefly)
 ```
+. <(curl https://raw.githubusercontent.com/joknarf/thefly/main/thefly) install
 fly add joknarf/dfbar
 ```
 or just clone the repo, and put `dfb` file in dir in your PATH
