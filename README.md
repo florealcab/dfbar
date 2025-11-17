@@ -4,7 +4,7 @@
 
 # dfbar
 
-Simple df command enhancer in less than 12K (only uses bash/df/awk)
+Simple df command enhancer in less than 4K (only uses bash/df/awk)
 
 ![image](https://github.com/user-attachments/assets/853140c7-4044-4ba3-8d44-4e1f7d396796)
 
