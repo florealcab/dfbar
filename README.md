@@ -9,6 +9,8 @@ Simple df command enhancer in less than 4K (only uses bash/df/awk)
 
 ![image](https://github.com/user-attachments/assets/853140c7-4044-4ba3-8d44-4e1f7d396796)
 
+![image](https://github.com/user-attachments/assets/c49d2f7f-bfe3-4e58-9faf-c07f44e20e46)
+
 ## Prerequisites
 
 * GNU df
