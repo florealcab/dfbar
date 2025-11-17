@@ -16,6 +16,7 @@ dfbar() {
   : ${DFBAR_BEGIN:=''}
   : ${DFBAR_END:=''}
   [[ " $*" = *\ -*a ]] && dfopt=( -T ) && all=1;
+  set -o pipefail
   $df -P "${dfopt[@]}" "$@" | awk -v sym1="$DFBAR_BEGIN" -v sym2="$DFBAR_END" -v all=$all '
   BEGIN {
     barlen=10
@@ -61,6 +62,7 @@ dfbar() {
     lines[nlines,7]=mnt
   }
   END {
+    if (nlines==0) exit
     # print header
     printf "%s%-*s %-*s %*s %*s %*s %-*s   %-*s%s\n", \
       gray_bg, w[1],h[1], w[2],h[2], w[3],h[3], w[4],h[4], w[5],h[5], w[6],h[6], w[7],h[7], reset
