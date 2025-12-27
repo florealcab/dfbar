@@ -11,7 +11,7 @@ env:
   TOOL: ${{ github.event.repository.name }}
   TOOL_PATH: dfb
   TOOL_BIN: dfb
-  DESC: self extracting shell gzip tarball packager
+  DESC: df enhancer with colors and usage percent bar
   VERSION: ${{ github.event.release.tag_name }}
   FPM_BASE: >
     -a all -s dir
