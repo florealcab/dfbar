@@ -9,7 +9,7 @@ permissions:
 
 env:
   TOOL: ${{ github.event.repository.name }}
-  TOOL_PATH: ${{ github.event.repository.name }}
+  TOOL_PATH: dfb
   TOOL_BIN: dfb
   DESC: self extracting shell gzip tarball packager
   VERSION: ${{ github.event.release.tag_name }}
