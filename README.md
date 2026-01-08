@@ -27,7 +27,34 @@ You can use a plugin manager, like the famous [thefly](https://github.com/joknar
 . <(curl https://raw.githubusercontent.com/joknarf/thefly/main/thefly) install
 fly add joknarf/dfbar
 ```
+
+or Use your prefered method according to your OS:
+
+```
+brew install joknarf/tools/dfbar
+```
+
+```
+sudo dnf install https://github.com/joknarf/dfbar/releases/latest/download/dfbar.rpm
+```
+
+```
+curl -OL https://github.com/joknarf/dfbar/releases/latest/download/dfbar.deb
+sudo dpkg -i dfbar.deb
+```
+
+```
+curl -OL https://github.com/joknarf/dfbar/releases/latest/download/dfbar.apk
+sudo apk add --allow-untrusted dfbar.apk
+```
+
+```
+curl -OL https://github.com/joknarf/dfbar/releases/latest/download/dfbar.pkg
+sudo installer -pkg dfbar.pkg -target /
+```
+
 or just clone the repo, and put `dfb` file in dir in your PATH
+
 ```
 git clone https://github.com/joknarf/dfbar
 ```
