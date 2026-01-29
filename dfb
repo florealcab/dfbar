@@ -10,23 +10,34 @@
 #
 type gdf >/dev/null 2>&1 && df=gdf || df=df
 [ -t 1 ] || exec $df "$@"
+# RGB custom colors : free used warn alert
+: ${DFBAR_COLORS:="36;114;67 30;90;180 175;138;27 160;0;0"}
+: ${DFBAR_BEGIN:=''}
+: ${DFBAR_END:=''}
 
 dfbar() {
   typeset dfopt=( -T -x fuse.snapfuse -x overlay -x rootfs -x devtmpfs -x efivarfs ) all df="${df:-df}"
-  : ${DFBAR_BEGIN:=''}
-  : ${DFBAR_END:=''}
   [[ " $*" = *\ -*a ]] && dfopt=( -T ) && all=1;
   set -o pipefail
-  $df -P "${dfopt[@]}" "$@" | awk -v sym1="$DFBAR_BEGIN" -v sym2="$DFBAR_END" -v all=$all '
+  $df -P "${dfopt[@]}" "$@" | awk -v sym1="$DFBAR_BEGIN" -v sym2="$DFBAR_END" -v all=$all -v col="$DFBAR_COLORS" '
   BEGIN {
     barlen=10
     esc="\033["
     reset=esc "0m"     ; fg_white=esc "97m"
-    green_bg=esc "42m" ; blue_bg=esc "44m"
-    yellow_bg=esc "43m"; red_bg=esc "41m"
-    gray_bg=esc "100m" ; dark_gray=esc "90m"
-    fg[green_bg]=esc "32m"  ; fg[blue_bg]=esc "34m"
-    fg[yellow_bg]=esc "33m" ; fg[red_bg]=esc "31m"    
+    if (col) {
+      split(col, cols)
+      green_bg=esc "48;2;" cols[1] "m"  ; fg[green_bg]=esc "38;2;" cols[1] "m"
+      blue_bg=esc "48;2;" cols[2] "m"   ; fg[blue_bg]=esc "38;2;" cols[2] "m"
+      yellow_bg=esc "48;2;" cols[3] "m" ; fg[yellow_bg]=esc "38;2;" cols[3] "m"
+      red_bg=esc "48;2;" cols[4] "m"    ; fg[red_bg]=esc "38;2;" cols[4] "m"
+      gray_bg=esc "48;2;32;64;64m"
+    } else {
+      green_bg=esc "42m" ; blue_bg=esc "44m"
+      yellow_bg=esc "43m"; red_bg=esc "41m"
+      fg[green_bg]=esc "32m"  ; fg[blue_bg]=esc "34m"
+      fg[yellow_bg]=esc "33m" ; fg[red_bg]=esc "31m"    
+      gray_bg=esc "100m" 
+    }
     lbg[0]=esc "48;5;234m"
     lbg[1]=esc "48;5;232m"
     typc["xfs"]=esc "94m"
@@ -65,7 +76,7 @@ dfbar() {
     if (nlines==0) exit
     # print header
     printf "%s%-*s %-*s %*s %*s %*s %-*s   %-*s%s\n", \
-      gray_bg, w[1],h[1], w[2],h[2], w[3],h[3], w[4],h[4], w[5],h[5], w[6],h[6], w[7],h[7], reset
+      fg_white gray_bg, w[1],h[1], w[2],h[2], w[3],h[3], w[4],h[4], w[5],h[5], w[6],h[6], w[7],h[7], reset
 
     for(i=1;i<=nlines;i++){
       dev=lines[i,1]; type=lines[i,2]; size=lines[i,3]; used=lines[i,4]; avail=lines[i,5]; pct=lines[i,6]; mnt=lines[i,7]
@@ -102,7 +113,7 @@ dfbar() {
       }
       bar=bar reset fg[bg] sym2 reset
       printf "%s%-*s %s%-*s%s %*s %*s %*s %s%s %-*s%s\n", \
-        lbg[i%2], w[1],dev, typc[type], w[2],type, fg_white, w[3],size, w[4],used, w[5],avail, bar, lbg[i%2], w[7],mnt, reset
+        fg_white lbg[i%2], w[1],dev, typc[type], w[2],type, fg_white, w[3],size, w[4],used, w[5],avail, bar, lbg[i%2] fg_white, w[7],mnt, reset
     }
     printf esc "?7h" # enable line wrapping
   }'
