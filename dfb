@@ -19,7 +19,23 @@ dfbar() {
   typeset dfopt=( -T -x fuse.snapfuse -x overlay -x rootfs -x devtmpfs -x efivarfs ) all df="${df:-df}"
   [[ " $*" = *\ -*a ]] && dfopt=( -T ) && all=1;
   set -o pipefail
-  $df -P "${dfopt[@]}" "$@" | awk -v sym1="$DFBAR_BEGIN" -v sym2="$DFBAR_END" -v all=$all -v col="$DFBAR_COLORS" '
+
+  # --- TRANSLATION THROUGH GETTEXT ---
+  # We ask translation for stadard words of df.
+  # If language is not installed, english is kept.
+  local h1=$(gettext "coreutils" "Filesystem")
+  local h2=$(gettext "coreutils" "Type")
+  local h3=$(gettext "coreutils" "Size")
+  local h4=$(gettext "coreutils" "Used")
+  local h5=$(gettext "coreutils" "Available")
+  local h6=$(gettext "coreutils" "Capacity")
+  local h7=$(gettext "coreutils" "Mounted on")
+
+  # --- DATA TREATMENT ---
+  LC_ALL=C $df -P "${dfopt[@]}" "$@" | awk \
+    -v sym1="$DFBAR_BEGIN" -v sym2="$DFBAR_END" \
+    -v all=$all -v col="$DFBAR_COLORS" \
+    -v h1="$h1" -v h2="$h2" -v h3="$h3" -v h4="$h4" -v h5="$h5" -v h6="$h6" -v h7="$h7" '
   BEGIN {
     barlen=10
     esc="\033["
@@ -50,13 +66,12 @@ dfbar() {
 
     printf esc "?7l" # disable line wrapping
     getline
+
+    # Ignore brut english line of df, replace by translated version:
+    h[1]=h1; h[2]=h2; h[3]=h3; h[4]=h4; h[5]=h5; h[6]=h6; h[7]=h7
+
     # initialize widths with header lengths
-    for(i=1;i<7;i++) {
-      h[i]=$i
-      w[i]=length($i)
-    }
-    h[7]=$7 " " $8 # Mounted on
-    w[7]=length(h[7])
+    for(i=1;i<=7;i++) w[i]=length(h[i])
     if(barlen>w[6]) w[6]=barlen
   }
   ! all && $2 == "tmpfs" && $NF != "/tmp" { next }
