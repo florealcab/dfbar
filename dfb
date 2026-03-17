@@ -16,6 +16,12 @@ type gdf >/dev/null 2>&1 && df=gdf || df=df
 : ${DFBAR_END:=''}
 
 dfbar() {
+  # Ignore format for help and version
+  for arg in "$@"; do
+    if [[ "$arg" == "--help" || "$arg" == "--version" ]]; then
+      exec $df "$@"
+    fi
+  done
   typeset dfopt=( -T -x fuse.snapfuse -x overlay -x rootfs -x devtmpfs -x efivarfs ) all df="${df:-df}"
   [[ " $*" = *\ -*a ]] && dfopt=( -T ) && all=1;
   set -o pipefail
